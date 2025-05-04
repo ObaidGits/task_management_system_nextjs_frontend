@@ -59,22 +59,6 @@ export default function Register() {
                 onChange={(e) => setEmail(e.target.value)}
                 className="form-control-custom"
               />
-              {submitFormLoading && (
-                <Spinner
-                  animation="border"
-                  role="status"
-                  size="sm"
-                  style={{
-                    position: 'absolute',
-                    top: '50%',
-                    right: '15px',
-                    transform: 'translateY(-50%)',
-                    zIndex: 1,
-                  }}
-                >
-                  <span className="visually-hidden">Loading...</span>
-                </Spinner>
-              )}
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label className="form-label-custom">Password</Form.Label>
@@ -85,22 +69,6 @@ export default function Register() {
                 onChange={(e) => setPw(e.target.value)}
                 className="form-control-custom"
               />
-              {submitFormLoading && (
-                <Spinner
-                  animation="border"
-                  role="status"
-                  size="sm"
-                  style={{
-                    position: 'absolute',
-                    top: '50%',
-                    right: '15px',
-                    transform: 'translateY(-50%)',
-                    zIndex: 1,
-                  }}
-                >
-                  <span className="visually-hidden">Loading...</span>
-                </Spinner>
-              )}
             </Form.Group>
             <Form.Group className="mb-4">
               <Form.Label className="form-label-custom">Role</Form.Label>

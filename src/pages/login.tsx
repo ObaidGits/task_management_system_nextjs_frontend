@@ -108,10 +108,8 @@ export default function Login() {
                   size="sm"
                   style={{
                     position: 'absolute',
-                    top: '50%',
+                    top: '60%',
                     right: '15px',
-                    transform: 'translateY(-50%)',
-                    zIndex: 1,
                   }}
                 >
                   <span className="visually-hidden">Loading...</span>
@@ -134,10 +132,8 @@ export default function Login() {
                   size="sm"
                   style={{
                     position: 'absolute',
-                    top: '50%',
+                    top: '60%',
                     right: '15px',
-                    transform: 'translateY(-50%)',
-                    zIndex: 1,
                   }}
                 >
                   <span className="visually-hidden">Loading...</span>

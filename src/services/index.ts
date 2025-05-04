@@ -5,12 +5,20 @@ interface User {
   role: string;
 }
 
+// export const authService = {
+//   login: (data: any) => api.post('/auth/login', data),
+//   register: (data: any) => api.post('/auth/register', data),
+//   logout: () => api.post('/auth/logout'),
+//   getProfile: () => api.get('/users/profile'),
+// };
+
 export const authService = {
-  login: (data: any) => api.post('/auth/login', data),
-  register: (data: any) => api.post('/auth/register', data),
-  logout: () => api.post('/auth/logout'),
-  getProfile: () => api.get('/users/profile'),
+  login: (data: any) => api.post('/auth/login', data, { withCredentials: true }),
+  register: (data: any) => api.post('/auth/register', data, { withCredentials: true }),
+  logout: () => api.post('/auth/logout', null, { withCredentials: true }),
+  getProfile: () => api.get('/users/profile', { withCredentials: true }),
 };
+
 
 export const taskService = {
   list: (params = {}) => api.get('/tasks', { params }).then(r => r.data),
@@ -31,10 +39,6 @@ export const logService = {
     return api.get(`/logs?role=${user.role}&_id=${user._id}`).then(r => r.data);
   },
 };
-
-// export const notificationService = {
-//   getAll: (user: User) => api.get(`/notifications`).then(res => res.data),
-// };
 
 export const notificationService = {
   getAll: (user: User) => api.get(`/notifications`).then(res => res.data),
