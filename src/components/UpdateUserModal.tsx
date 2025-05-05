@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Button, Form, Spinner } from 'react-bootstrap';
 
 interface Props {
     show: boolean;
@@ -10,6 +10,7 @@ interface Props {
 
 export default function UpdateUserModal({ show, onHide, onSave, user }: Props) {
     const [formData, setFormData] = useState({ fullName: '', email: '', role: '' });
+    const [isSubmitting, setIsSubmitting] = useState(false); // Loading state
 
     useEffect(() => {
         if (user) {
@@ -25,9 +26,16 @@ export default function UpdateUserModal({ show, onHide, onSave, user }: Props) {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = () => {
-        onSave({ ...user, ...formData });
-        onHide();
+    const handleSubmit = async () => {
+        setIsSubmitting(true); // Start loading
+        try {
+            await onSave({ ...user, ...formData });
+        } catch (error) {
+            // Handle error if needed
+        } finally {
+            setIsSubmitting(false); // Stop loading
+            onHide(); // Close the modal after submission
+        }
     };
 
     return (
@@ -68,8 +76,23 @@ export default function UpdateUserModal({ show, onHide, onSave, user }: Props) {
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={onHide}>Cancel</Button>
-                <Button variant="primary" onClick={handleSubmit}>Update</Button>
+                <Button variant="secondary" onClick={onHide} disabled={isSubmitting}>
+                    Cancel
+                </Button>
+                <Button
+                    variant="primary"
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? (
+                        <>
+                            <Spinner animation="border" size="sm" className="me-2" />
+                            Updating...
+                        </>
+                    ) : (
+                        'Update'
+                    )}
+                </Button>
             </Modal.Footer>
         </Modal>
     );

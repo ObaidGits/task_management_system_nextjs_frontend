@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Alert } from 'react-bootstrap';
+import { Form, Button, Alert, Spinner } from 'react-bootstrap';
 import { taskService, userService } from '../services';
 import { useAuth } from '../context/AuthContext';
 import { FaPlusCircle } from 'react-icons/fa';
@@ -18,6 +18,7 @@ export default function NewTaskForm({ onSuccess }: NewTaskFormProps) {
   const [assignedTo, setAssignedTo] = useState('');
   const [users, setUsers] = useState([]);
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false); // Loading state for task creation
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -40,8 +41,15 @@ export default function NewTaskForm({ onSuccess }: NewTaskFormProps) {
     }
 
     setError('');
-    await taskService.create({ title, description, dueDate, priority, status, assignedTo });
-    if (onSuccess) onSuccess();
+    setIsSubmitting(true); // Start loading
+    try {
+      await taskService.create({ title, description, dueDate, priority, status, assignedTo });
+      if (onSuccess) onSuccess();
+    } catch (error) {
+      setError('An error occurred while creating the task.');
+    } finally {
+      setIsSubmitting(false); // Stop loading
+    }
   };
 
   return (
@@ -87,7 +95,18 @@ export default function NewTaskForm({ onSuccess }: NewTaskFormProps) {
         </Form.Select>
       </Form.Group>
 
-      <Button type="submit" className="btn-primary"><FaPlusCircle /> Create Task</Button>
+      <Button type="submit" className="btn-primary" disabled={isSubmitting}>
+        {isSubmitting ? (
+          <>
+            <Spinner animation="border" size="sm" className="me-2" />
+            Creating...
+          </>
+        ) : (
+          <>
+            <FaPlusCircle /> Create Task
+          </>
+        )}
+      </Button>
     </Form>
   );
 }

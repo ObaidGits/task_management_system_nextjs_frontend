@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Button, Form, Spinner } from 'react-bootstrap';
 import { Task } from '../pages/tasks';
 import { userService } from '../services';
 import { useAuth } from '../context/AuthContext';
@@ -23,6 +23,7 @@ const priorityOptions = ['Low', 'Medium', 'High'];
 const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, show, onClose, onSave }) => {
   const [updatedTask, setUpdatedTask] = useState<Task | null>(null);
   const [allUsers, setAllUsers] = useState<UserOption[]>([]);
+  const [isSaving, setIsSaving] = useState(false); // Loading state for saving
   const { user } = useAuth();
 
   useEffect(() => {
@@ -50,13 +51,7 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, show, onClose, onSa
     updatedTask.createdBy === userId ||
     (typeof updatedTask.createdBy === 'object' && updatedTask.createdBy._id === userId);
 
-
   const canEditAll = isAdminOrManager || isCreator;
-
-  // const handleChange = (e: React.ChangeEvent<any>) => {
-  //   const { name, value } = e.target;
-  //   setUpdatedTask({ ...updatedTask, [name]: value });
-  // };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -64,11 +59,17 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, show, onClose, onSa
     const { name, value } = e.target;
     setUpdatedTask({ ...updatedTask, [name]: value });
   };
-  
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (updatedTask) {
-      onSave(updatedTask);
+      setIsSaving(true); // Start loading
+      try {
+        await onSave(updatedTask);
+      } catch (error) {
+        console.error('Error saving task:', error);
+      } finally {
+        setIsSaving(false); // Stop loading
+      }
     }
   };
 
@@ -168,8 +169,15 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, show, onClose, onSa
         <Button variant="secondary" onClick={onClose}>
           Close
         </Button>
-        <Button variant="primary" onClick={handleSave}>
-          Save Changes
+        <Button variant="primary" onClick={handleSave} disabled={isSaving}>
+          {isSaving ? (
+            <>
+              <Spinner animation="border" size="sm" className="me-2" />
+              Saving...
+            </>
+          ) : (
+            'Save Changes'
+          )}
         </Button>
       </Modal.Footer>
     </Modal>
