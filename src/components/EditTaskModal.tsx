@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { Task } from '../pages/tasks';
 import { userService } from '../services';
@@ -53,10 +53,18 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, show, onClose, onSa
 
   const canEditAll = isAdminOrManager || isCreator;
 
-  const handleChange = (e: React.ChangeEvent<any>) => {
+  // const handleChange = (e: React.ChangeEvent<any>) => {
+  //   const { name, value } = e.target;
+  //   setUpdatedTask({ ...updatedTask, [name]: value });
+  // };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setUpdatedTask({ ...updatedTask, [name]: value });
   };
+  
 
   const handleSave = () => {
     if (updatedTask) {
